@@ -1,0 +1,63 @@
+Create a New Prescription
+Receives a request containing the id's of the clinic, physician, patient and a string text describing the patient's prescription. The given id's are consulted
+in the dependent services and, finally, the names referred to the id's are stored in the data base.
+---
+tags:
+  - Prescriptions
+summary: Insere as imagens de documentos em que serão feitas as detecções.
+consumes:
+  - application/json
+
+requestBody:
+  name: document
+  description: "This API accepts a dictionary of dictionaries containing the id's of the clinic, physician, patient and a text string that is the prescription."
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          clinic:
+            type: dict
+            example: {'id': 1}
+          physician:
+            type: dict
+            example: {'id': 1}
+          patient:
+            type: dict
+            example: {'id': 1}
+          text:
+            type: str
+        required:
+          - clinic
+          - physician
+          - patient
+          - text
+
+      examples:
+        ValidInput:
+          value:
+            clinic: {'id': 1}
+            physician: {'id': 1}
+            patient: {'id': 1}
+            text: "Dipirona 2x ao dia"
+
+responses:
+  "200":
+    description: JSON object containing the informations (names, phone number, email, etc) about the clinic, physician and patient.
+    content:
+      application/json:
+        schema:
+          type: object
+        examples:
+          DocumentoscopyValidDocuments:
+            value:
+              clinic_id: "1"
+              clinic_name: "Fic Clinic"
+              physician_id: "1"
+              physician_name: "Fulano de Tal"
+              physician_crm: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              patient_id: "1"
+              patient_name: "Ciclano de Tal"
+              patient_email: "ciclano@email.com.br"
+              patient_phone: "x-xxx-xxx-xxx xxxx"
