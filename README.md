@@ -1,2 +1,2 @@
 # iClinicAPI
-An API developed as a solution to the iClinic Back-end Developer Challenge.
+A Flask API developed as a solution to iClinic Back-end Developer Challenge. More information about this challenge can be obtained [here](https://github.com/iclinic/iclinic-python-challenge).
