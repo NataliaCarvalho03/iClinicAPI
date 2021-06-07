@@ -4,12 +4,13 @@ from flask_jwt import JWT, jwt_required
 from flasgger import Swagger, swag_from
 from dotenv import find_dotenv, load_dotenv
 import os
-
 from security import authenticate, identity
 from providers.dependent_services import Dependent_Services
+from data_base import Data_Base
+
 
 load_dotenv(find_dotenv())
-
+db = Data_Base(os.getenv('db_address'))
 app = Flask(__name__)
 app.secret_key = os.getenv('api_key')
 app.config["SWAGGER"] = {
@@ -35,6 +36,16 @@ class Prescription(Resource):
         services = Dependent_Services()
         serv_resp = services.consult_services([data['physician']['id'], data['clinic']['id'], data['patient']['id']])
         return services.post_metrics(serv_resp)
+
+class Sigin_Up(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('user_id', type=str, required=True)
+    parser.add_argument('username', type=str, required=True)
+    parser.add_argument('userpassword', type=str, required=True)
+
+    def post(self):
+        user_data = self.parser.parse_args()
+        db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
 
 api.add_resource(Prescription, '/prescriptions')
 
