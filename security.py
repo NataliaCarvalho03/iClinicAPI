@@ -1,8 +1,9 @@
 from user import User
+from data_base import Data_Base
+import os
 
-users = [
-    User(1, 'natalia', 'asdf')
-]
+database = Data_Base(os.getenv('db_address'))
+users = database.get_users_data()
 
 username_mapping = {u.username: u for u in users}
 userid_mapping = {u.id: u for u in users}

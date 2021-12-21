@@ -29,7 +29,7 @@ class Prescription(Resource):
     parser.add_argument('patient', type=dict, required=True)
     parser.add_argument('text', type=str, required=True)
     
-    @jwt_required()
+    #@jwt_required()
     @swag_from('docs/prescriptions.yaml')
     def post(self):
         data = self.parser.parse_args()
@@ -37,7 +37,7 @@ class Prescription(Resource):
         serv_resp = services.consult_services([data['physician']['id'], data['clinic']['id'], data['patient']['id']])
         return services.post_metrics(serv_resp)
 
-class Sigin_Up(Resource):
+class Sign_Up(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('user_id', type=str, required=True)
     parser.add_argument('username', type=str, required=True)
@@ -45,9 +45,11 @@ class Sigin_Up(Resource):
 
     def post(self):
         user_data = self.parser.parse_args()
-        db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
+        response = db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
+        return response[0], response[1]
 
 api.add_resource(Prescription, '/prescriptions')
+api.add_resource(Sign_Up, '/signup')
 
 if __name__ == '__main__':
     app.run(debug=True)

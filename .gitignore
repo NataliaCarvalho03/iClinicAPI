@@ -130,3 +130,5 @@ dmypy.json
 .vscode
 .env
 *.db
+*.sqlite
+Pipfile.lock
