@@ -14,31 +14,51 @@ class Dependent_Services():
     }
     metrics_auth = os.getenv('metrics')
 
+    services_url = 'https://5f71da6964a3720016e60ff8.mockapi.io/v1/'
 
-    def consult_services(self, ids: list):
-        services_url = 'https://5f71da6964a3720016e60ff8.mockapi.io/v1'
-        services = list(self.consult_services_auth.keys())
-        services_responses = []
-        for index in range(len(services)):
-            self.header['Authorization'] = self.consult_services_auth[services[index]]
-            services_responses.append(requests.request('GET', url=services_url + f'/{services[index]}/{ids[index]}', headers=self.header).json())
-        return services_responses
+
+    def consult_physicians(self, physician_id):
+        self.header['Authorization'] = self.consult_services_auth['physicians']
+        physicians_response = requests.request('GET', url=self.services_url + f'physicians/{physician_id}', headers=self.header)
+        physicians_response=physicians_response.json()
+        return physicians_response
+
+    def consult_clinics(self, clinic_id):
+        self.header['Authorization'] = self.consult_services_auth['clinics']
+        clinics_response = requests.request('GET', url=self.services_url + f'clinics/{clinic_id}', headers=self.header)
+        clinics_response=clinics_response.json()
+        return clinics_response
+
+    def consult_patients(self, patient_id):
+        self.header['Authorization'] = self.consult_services_auth['clinics']
+        clinics_response = requests.request('GET', url=self.services_url + f'patients/{patient_id}', headers=self.header)
+        clinics_response=clinics_response.json()
+        return clinics_response
+
+
+    def consult_services(self, data: dict):
+        physicians_resp = self.consult_physicians(data['physician']['id'])
+        clinics_resp = self.consult_clinics(data['clinic']['id'])
+        patients_resp = self.consult_patients(data['clinic']['id'])
+        metrics_payload, metrics_response = self.post_metrics(physicians_resp, clinics_resp, patients_resp, data['text'])
+        return [metrics_payload, metrics_response]
 
     
-    def post_metrics(self, responses_list: list):
+    def post_metrics(self, physician, clinic, patient, prescription):
         metrics_url = 'https://5f71da6964a3720016e60ff8.mockapi.io/v1/metrics'
         self.header['Authorization'] = self.metrics_auth
         metrics_payload = dict()
-        metrics_payload['clinic_id'] = responses_list[1]['id']
-        metrics_payload['clinic_name'] = responses_list[1]['name']
-        metrics_payload['physician_id'] = responses_list[0]['id']
-        metrics_payload['physician_name'] = responses_list[0]['name']
-        metrics_payload['physician_crm'] = responses_list[0]['crm']
-        metrics_payload['patient_id'] = responses_list[2]['id']
-        metrics_payload['patient_name'] = responses_list[2]['name']
-        metrics_payload['patient_email'] = responses_list[2]['email']
-        metrics_payload['patient_phone'] = responses_list[2]['phone']
+        metrics_payload['clinic_id'] = clinic['id']
+        metrics_payload['clinic_name'] = clinic['name']
+        metrics_payload['physician_id'] = physician['id']
+        metrics_payload['physician_name'] = physician['name']
+        metrics_payload['physician_crm'] = physician['crm']
+        metrics_payload['patient_id'] = patient['id']
+        metrics_payload['patient_name'] = patient['name']
+        metrics_payload['patient_email'] = patient['email']
+        metrics_payload['patient_phone'] = patient['phone']
         resp = requests.request('POST', url=metrics_url, headers=self.header)
         print('METRICS STATUS: ', resp.status_code)
-        return metrics_payload
+        metrics_payload['prescription_text'] = prescription
+        return [metrics_payload, resp]
 

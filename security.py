@@ -2,18 +2,26 @@ from user import User
 from data_base import Data_Base
 import os
 
-database = Data_Base(os.getenv('db_address'))
-users = database.get_users_data()
+class Security:
 
-username_mapping = {u.username: u for u in users}
-userid_mapping = {u.id: u for u in users}
+    database = Data_Base(os.getenv('db_address'))
+    users = database.get_users_data()
 
-def authenticate(username, password):
-    user = username_mapping.get(username, None)
-    if user and user.password == password:
-        return user
+    username_mapping = {u.username: u for u in users}
+    userid_mapping = {u.id: u for u in users}
+
+    def authenticate(self, username, password):
+        user = self.username_mapping.get(username, None)
+        if user and user.password == password:
+            return user
 
 
-def identity(payload):
-    user_id = payload['identity']
-    return userid_mapping.get(user_id, None)
+    def identity(self, payload):
+        user_id = payload['identity']
+        return self.userid_mapping.get(user_id, None)
+
+
+    def update_users(self):
+        self.users = self.database.get_users_data()
+        self.username_mapping = {u.username: u for u in self.users}
+        self.userid_mapping = {u.id: u for u in self.users}

@@ -27,7 +27,7 @@ class Data_Base(metaclass=DataBaseMeta):
     def create_tables(self):
         self.cursor.execute('''CREATE TABLE users (userid text, username text, userpassword text)''')
         self.cursor.execute("""CREATE TABLE prescription (
-            userid text,
+            clinic_id text,
             clinic_name text,
             physician_id text,
             physician_name text,
@@ -35,10 +35,30 @@ class Data_Base(metaclass=DataBaseMeta):
             patient_id text,
             patient_name text,
             patient_email text,
-            patient_phone text)""")
+            patient_phone text,
+            prescription_text text)""")
         self.connection.commit()
         self.connection.close()
     
+    def insert_new_prescription(self, prescription_data: dict):
+        self.connection = sqlite3.connect(self.db_address)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(" INSERT INTO prescription VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ",
+                            (
+                                prescription_data['clinic_id'],
+                                prescription_data['clinic_name'],
+                                prescription_data['physician_id'],
+                                prescription_data['physician_name'],
+                                prescription_data['physician_crm'],
+                                prescription_data['patient_id'],
+                                prescription_data['patient_name'],
+                                prescription_data['patient_email'],
+                                prescription_data['patient_phone'],
+                                prescription_data['prescription_text']
+                            ))
+        self.connection.commit()
+        print('Escrevi no banco')
+        self.connection.close()
     
     def get_user_data(self, username):
         self.connection = sqlite3.connect(self.db_address)
@@ -57,7 +77,7 @@ class Data_Base(metaclass=DataBaseMeta):
         self.connection.close()
         return all_users
 
-    def get_user_prescriptions(self, user_id, username, userpassword):
+    def get_user_prescriptions(self, user_id, username):
         self.connection = sqlite3.connect(self.db_address)
         self.cursor = self.connection.cursor()
         self.connection.close()
