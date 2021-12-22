@@ -1,5 +1,5 @@
 import sqlite3, os
-from user import User
+from .user import User
 
 class DataBaseMeta(type):
     __instances = {}

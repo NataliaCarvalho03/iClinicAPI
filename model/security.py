@@ -1,5 +1,4 @@
-from user import User
-from data_base import Data_Base
+from .data_base import Data_Base
 import os
 
 class Security:
@@ -25,3 +24,5 @@ class Security:
         self.users = self.database.get_users_data()
         self.username_mapping = {u.username: u for u in self.users}
         self.userid_mapping = {u.id: u for u in self.users}
+        print('Atualizei')
+        print(self.users)

@@ -4,9 +4,11 @@ from flask_jwt import JWT, jwt_required
 from flasgger import Swagger, swag_from
 from dotenv import find_dotenv, load_dotenv
 import os
-from security import Security
-from providers.dependent_services import Dependent_Services
-from data_base import Data_Base
+from model.security import Security
+from model.data_base import Data_Base
+#from controller.routes import get_routes
+from view.resources import Prescription, Sign_Up
+
 
 
 load_dotenv(find_dotenv())
@@ -24,38 +26,8 @@ jwt = JWT(app, security.authenticate, security.identity)
 Swagger(app)
 api = Api(app)
 
-class Prescription(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('clinic', type=dict, required=True)
-    parser.add_argument('physician', type=dict, required=True)
-    parser.add_argument('patient', type=dict, required=True)
-    parser.add_argument('text', type=str, required=True)
-    
-    @jwt_required()
-    @swag_from('docs/prescriptions.yaml')
-    def post(self):
-        data = self.parser.parse_args()
-        services = Dependent_Services()
-        serv_resp, metrics_resp = services.consult_services(data)
-        db.insert_new_prescription(serv_resp)
-        return 'ok', 200 #services.post_metrics(serv_resp)
-
-class Sign_Up(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('user_id', type=str, required=True)
-    parser.add_argument('username', type=str, required=True)
-    parser.add_argument('userpassword', type=str, required=True)
-
-    def post(self):
-        user_data = self.parser.parse_args()
-        response = db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
-        security.update_users()
-        return response[0], response[1]
-
-
 api.add_resource(Prescription, '/prescriptions')
 api.add_resource(Sign_Up, '/signup')
-
 
 if __name__ == '__main__':
     app.run(debug=True)
