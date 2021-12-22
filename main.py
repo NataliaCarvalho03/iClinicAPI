@@ -14,8 +14,10 @@ from view.resources import Prescription, Sign_Up
 load_dotenv(find_dotenv())
 db = Data_Base(os.getenv('db_address'))
 security=Security()
+print('Security at beginning: ', security.username_mapping)
 app = Flask(__name__)
 app.secret_key = os.getenv('api_key')
+
 app.config["SWAGGER"] = {
     "title": "iClinic API",
     "description": """Prescriptions API for patient management.""",

@@ -1,12 +1,13 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from flasgger import swag_from
+import os
 
 from model.security import Security
 from model.dependent_services import Dependent_Services
 from model.data_base import Data_Base
 
-db = Data_Base()
+db = Data_Base(os.getenv('db_address'))
 
 class Prescription(Resource):
     parser = reqparse.RequestParser()
@@ -34,5 +35,6 @@ class Sign_Up(Resource):
         user_data = self.parser.parse_args()
         response = db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
         security=Security()
+        print('Security at resources: ', security.username_mapping)
         security.update_users()
         return response[0], response[1]

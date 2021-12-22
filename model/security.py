@@ -3,11 +3,18 @@ import os
 
 class Security:
 
-    database = Data_Base(os.getenv('db_address'))
-    users = database.get_users_data()
+    __state={}
 
-    username_mapping = {u.username: u for u in users}
-    userid_mapping = {u.id: u for u in users}
+    def __new__(cls, *args, **kwargs):
+        obj = super(Security, cls).__new__(cls, *args, **kwargs)
+        obj.__dict__ = Security.__state
+        return obj
+
+    def __init__(self) -> None:
+        self.database = Data_Base(os.getenv('db_address'))
+        self.users = self.database.get_users_data()
+        self.username_mapping = {u.username: u for u in self.users}
+        self.userid_mapping = {u.id: u for u in self.users}
 
     def authenticate(self, username, password):
         user = self.username_mapping.get(username, None)
