@@ -5,7 +5,7 @@ A Flask API developed as a solution to iClinic Back-end Developer Challenge. Mor
 
 You can run this project in two ways: Using docker or not.
 
-## Withou docker :(
+## Without docker :(
 
 Install the requirements (from pipfile or requirements.txt) on a virtual environment of your preference.
 
