@@ -12,7 +12,7 @@ from view.resources import Prescription, Sign_Up
 
 
 load_dotenv(find_dotenv())
-db = Data_Base(os.getenv('db_address'))
+db = Data_Base(str(os.getenv('db_address')))
 security=Security()
 print('Security at beginning: ', security.username_mapping)
 app = Flask(__name__)

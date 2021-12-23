@@ -7,7 +7,7 @@ from model.security import Security
 from model.dependent_services import Dependent_Services
 from model.data_base import Data_Base
 
-db = Data_Base(os.getenv('db_address'))
+db = Data_Base( str(os.getenv('db_address')) )
 
 class Prescription(Resource):
     parser = reqparse.RequestParser()
@@ -17,7 +17,7 @@ class Prescription(Resource):
     parser.add_argument('text', type=str, required=True)
     
     @jwt_required()
-    @swag_from('docs/prescriptions.yaml')
+    @swag_from('../docs/prescriptions.yaml')
     def post(self):
         data = self.parser.parse_args()
         services = Dependent_Services()
