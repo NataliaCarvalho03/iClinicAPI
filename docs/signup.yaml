@@ -1,0 +1,49 @@
+Register a new user
+Receives a request containing the user id, username and user password. This informations are used to authenticate the users of this application.
+---
+tags:
+  - SignUp
+summary: Insere as imagens de documentos em que serão feitas as detecções.
+consumes:
+  - application/json
+
+requestBody:
+  name: document
+  description: "This API accepts a dictionary of dictionaries containing the user id, user name and user password"
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          user_id:
+            type: string
+            example: "00"
+          username:
+            type: string
+            example: "JohnDoe"
+          userpassword:
+            type: string
+            example: "12345"
+        required:
+          - user_id
+          - username
+          - userpassword
+
+      examples:
+        ValidInput:
+          value:
+            user_id: "00"
+            username: "JohnDoe"
+            userpassword: "12345"
+
+responses:
+  "200":
+    description: JSON object containing the register status.
+    content:
+      application/json:
+        schema:
+          type: object
+        examples:
+          DocumentoscopyValidDocuments:
+            value: "user registered"

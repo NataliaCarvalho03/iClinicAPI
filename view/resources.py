@@ -31,6 +31,7 @@ class Sign_Up(Resource):
     parser.add_argument('username', type=str, required=True)
     parser.add_argument('userpassword', type=str, required=True)
 
+    @swag_from('../docs/signup.yaml')
     def post(self):
         user_data = self.parser.parse_args()
         response = db.create_new_user(user_data['user_id'], user_data['username'], user_data['userpassword'])
