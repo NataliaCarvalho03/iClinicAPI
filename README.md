@@ -69,14 +69,15 @@ curl -X POST \
   -H 'Authorization: JWT xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \ # Replace the "xxxx..." by your JWT token
   -H 'Content-Type: application/json' \
   -d '{
-  "clinic_id": 1,
-  "clinic_name": "Clínica A",
-  "physician_id": 1,
-  "physician_name": "José",
-  "physician_crm": "SP293893",
-  "patient_id": 1,
-  "patient_name": "Rodrigo",
-  "patient_email": "rodrigo@gmail.com",
-  "patient_phone": "(16)998765625",
-  "prescription_id": 1
-}'```
+  "clinic": {
+    "id": 1
+  },
+  "physician": {
+    "id": 1
+  },
+  "patient": {
+    "id": 1
+  },
+  "text": "Dipirona 1x ao dia"
+}'
+```
